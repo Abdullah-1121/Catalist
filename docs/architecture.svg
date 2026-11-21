@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 650" width="1100" height="650" role="img" aria-label="Meeting memory architecture: the ingest pipeline parses, embeds and extracts cards from each meeting into a memory store; the query agent filters by team, searches the store in a loop, and code builds exact quotes for answers.json.">
+  <style>
+    text { font-family: "Inter", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; fill: #19212C; }
+    .title { font-family: "Space Grotesk", "Helvetica Neue", Arial, sans-serif; font-size: 18px; font-weight: 700; }
+    .lane { font-size: 13px; font-weight: 600; letter-spacing: .08em; fill: #5A6575; }
+    .t { font-size: 14px; font-weight: 600; }
+    .s { font-size: 11.5px; fill: #5A6575; }
+    .k { font-size: 10px; font-weight: 600; letter-spacing: .1em; }
+    .lbl { font-size: 11px; fill: #5A6575; }
+    .mono { font-family: "JetBrains Mono", Menlo, Consolas, monospace; font-size: 11px; }
+    .edge { stroke: #7A8494; stroke-width: 1.4; fill: none; }
+    .dash { stroke: #B95A0C; stroke-dasharray: 5 4; }
+    .band { fill: #E9EDF2; stroke: #C6CED9; }
+    .box { fill: #FFFFFF; stroke-width: 2; }
+    .code { stroke: #2F67A6; } .code-k { fill: #2F67A6; }
+    .llm { stroke: #B95A0C; } .llm-k { fill: #B95A0C; }
+    .embed { stroke: #17806A; } .embed-k { fill: #17806A; }
+    .data { stroke: #6B7584; stroke-dasharray: 5 3; } .data-k { fill: #6B7584; }
+    .store { stroke: #C6CED9; }
+  </style>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7A8494"/>
+    </marker>
+    <marker id="arrLlm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#B95A0C"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1100" height="650" fill="#F4F6F8"/>
+
+  <!-- lane labels -->
+  <text class="lane" x="40" y="36">INGEST · ONCE PER MEETING</text>
+  <text class="lane" x="40" y="420">QUERY · EVERY QUESTION</text>
+
+  <!-- memory store band -->
+  <rect class="band" x="40" y="258" width="1040" height="104" rx="10"/>
+  <text class="lane" x="52" y="280">MEMORY</text>
+
+  <!-- ingest edges -->
+  <line class="edge" x1="170" y1="95" x2="198" y2="95" marker-end="url(#arr)"/>
+  <line class="edge" x1="350" y1="95" x2="468" y2="95" marker-end="url(#arr)"/>
+  <text class="lbl" x="409" y="87" text-anchor="middle">one meeting</text>
+  <line class="edge" x1="640" y1="95" x2="698" y2="95" marker-end="url(#arr)"/>
+  <text class="lbl" x="669" y="87" text-anchor="middle">cards</text>
+  <text class="lbl" x="555" y="152" text-anchor="middle">same team: a → b → c → d · teams in parallel</text>
+
+  <line class="edge" x1="230" y1="130" x2="230" y2="288" marker-end="url(#arr)"/>
+  <text class="lbl" x="222" y="215" text-anchor="end">store turns</text>
+  <line class="edge" x1="320" y1="130" x2="320" y2="163" marker-end="url(#arr)"/>
+  <line class="edge" x1="365" y1="235" x2="365" y2="288" marker-end="url(#arr)"/>
+
+  <line class="edge" x1="740" y1="130" x2="740" y2="288" marker-end="url(#arr)"/>
+  <text class="lbl" x="732" y="205" text-anchor="end">write cards + links</text>
+  <line class="edge" x1="850" y1="130" x2="850" y2="288" marker-end="url(#arr)"/>
+  <text class="lbl" x="858" y="215">update current state</text>
+
+  <path class="edge dash" d="M 990 290 V 44 H 555 V 58" marker-end="url(#arrLlm)"/>
+  <text class="lbl" x="772" y="37" text-anchor="middle">fed into the prompt: this team's topic list</text>
+
+  <!-- ingest nodes -->
+  <rect class="box data" x="40" y="60" width="130" height="70" rx="8"/>
+  <text class="k data-k" x="52" y="78">DATA</text>
+  <text class="t" x="52" y="98">Transcripts</text>
+  <text class="s" x="52" y="117">138 .txt files</text>
+
+  <rect class="box code" x="200" y="60" width="150" height="70" rx="8"/>
+  <text class="k code-k" x="212" y="78">CODE</text>
+  <text class="t" x="212" y="98">1 · Parser</text>
+  <text class="s" x="212" y="117">turns, IDs, metadata</text>
+
+  <rect class="box embed" x="290" y="165" width="150" height="70" rx="8"/>
+  <text class="k embed-k" x="302" y="183">SMALL MODEL</text>
+  <text class="t" x="302" y="203">2 · Embedder</text>
+  <text class="s" x="302" y="222">turn text → vector</text>
+
+  <rect class="box llm" x="470" y="60" width="170" height="70" rx="8"/>
+  <text class="k llm-k" x="482" y="78">LLM</text>
+  <text class="t" x="482" y="98">3 · Extractor</text>
+  <text class="s" x="482" y="117">cards from one meeting</text>
+
+  <rect class="box llm" x="700" y="60" width="170" height="70" rx="8"/>
+  <text class="k llm-k" x="712" y="78">LLM PROPOSES · CODE APPLIES</text>
+  <text class="t" x="712" y="98">4 · Linker</text>
+  <text class="s" x="712" y="117">marks what is superseded</text>
+
+  <!-- store nodes -->
+  <rect class="box store" x="100" y="290" width="180" height="56" rx="6"/>
+  <text class="t" x="112" y="313">Turns</text>
+  <text class="s mono" x="112" y="333">TS3004c#57 → exact text</text>
+
+  <rect class="box store" x="340" y="290" width="160" height="56" rx="6"/>
+  <text class="t" x="352" y="313">Vectors</text>
+  <text class="s" x="352" y="333">search by meaning</text>
+
+  <rect class="box store" x="560" y="290" width="220" height="56" rx="6"/>
+  <text class="t" x="572" y="313">Cards + links</text>
+  <text class="s" x="572" y="333">decisions, actions, numbers…</text>
+
+  <rect class="box store" x="820" y="290" width="220" height="56" rx="6"/>
+  <text class="t" x="832" y="313">Topic registry</text>
+  <text class="s" x="832" y="333">per team: topic → current</text>
+
+  <!-- query edges -->
+  <line class="edge" x1="180" y1="475" x2="208" y2="475" marker-end="url(#arr)"/>
+  <line class="edge" x1="340" y1="475" x2="428" y2="475" marker-end="url(#arr)"/>
+  <text class="lbl" x="385" y="467" text-anchor="middle">team only</text>
+  <line class="edge" x1="650" y1="475" x2="708" y2="475" marker-end="url(#arr)"/>
+  <text class="lbl" x="679" y="467" text-anchor="middle">turn IDs</text>
+  <line class="edge" x1="870" y1="475" x2="918" y2="475" marker-end="url(#arr)"/>
+
+  <line class="edge" x1="455" y1="440" x2="252" y2="349" marker-end="url(#arr)"/>
+  <text class="lbl mono" x="352" y="408" text-anchor="end">read_turns</text>
+  <line class="edge" x1="520" y1="440" x2="442" y2="349" marker-end="url(#arr)"/>
+  <text class="lbl mono" x="487" y="400">search_turns</text>
+  <line class="edge" x1="610" y1="440" x2="640" y2="349" marker-end="url(#arr)"/>
+  <text class="lbl mono" x="634" y="400">search_cards · timeline</text>
+
+  <path class="edge" d="M 615 510 C 615 562, 465 562, 465 514" marker-end="url(#arr)"/>
+  <text class="lbl" x="540" y="580" text-anchor="middle">loop until there is enough evidence</text>
+  <text class="lbl" x="790" y="530" text-anchor="middle">copies words from Turns,</text>
+  <text class="lbl" x="790" y="545" text-anchor="middle">never from the LLM</text>
+
+  <!-- query nodes -->
+  <rect class="box data" x="40" y="440" width="140" height="70" rx="8"/>
+  <text class="k data-k" x="52" y="458">INPUT</text>
+  <text class="t" x="52" y="478">Question</text>
+  <text class="s" x="52" y="497">e.g. Q13, TS3004</text>
+
+  <rect class="box code" x="210" y="440" width="130" height="70" rx="8"/>
+  <text class="k code-k" x="222" y="458">CODE</text>
+  <text class="t" x="222" y="478">5 · Filter</text>
+  <text class="s" x="222" y="497">team = TS3004</text>
+
+  <rect class="box llm" x="430" y="440" width="220" height="70" rx="8"/>
+  <text class="k llm-k" x="442" y="458">LLM DECIDES · CODE RUNS TOOLS</text>
+  <text class="t" x="442" y="478">6 · Agent loop</text>
+  <text class="s" x="442" y="497">plan → search → read → enough?</text>
+
+  <rect class="box code" x="710" y="440" width="160" height="70" rx="8"/>
+  <text class="k code-k" x="722" y="458">CODE</text>
+  <text class="t" x="722" y="478">7 · Quote builder</text>
+  <text class="s" x="722" y="497">exact ≥ 6-word quote</text>
+
+  <rect class="box data" x="920" y="440" width="160" height="70" rx="8"/>
+  <text class="k data-k" x="932" y="458">OUTPUT</text>
+  <text class="t" x="932" y="478">answers.json</text>
+  <text class="s" x="932" y="497">+ TS3012 brief</text>
+
+  <!-- legend -->
+  <line x1="40" y1="600" x2="1080" y2="600" stroke="#C6CED9"/>
+  <rect class="box code" x="40" y="616" width="14" height="14" rx="3"/>
+  <text class="lbl" x="62" y="627">Plain code (deterministic, free)</text>
+  <rect class="box llm" x="260" y="616" width="14" height="14" rx="3"/>
+  <text class="lbl" x="282" y="627">LLM (judgment about meaning)</text>
+  <rect class="box embed" x="470" y="616" width="14" height="14" rx="3"/>
+  <text class="lbl" x="492" y="627">Small embedding model (local CPU)</text>
+  <rect class="box data" x="710" y="616" width="14" height="14" rx="3"/>
+  <text class="lbl" x="732" y="627">Data in / out</text>
+  <text class="lbl" x="1080" y="627" text-anchor="end">Architecture v0</text>
+</svg>
