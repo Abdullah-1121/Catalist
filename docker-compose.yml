@@ -1,0 +1,19 @@
+services:
+  db:
+    image: pgvector/pgvector:0.8.7-pg18-trixie
+    environment:
+      POSTGRES_USER: catalist
+      POSTGRES_PASSWORD: catalist # local dev only; must match DATABASE_URL in .env
+      POSTGRES_DB: catalist
+    ports:
+      - "127.0.0.1:5432:5432" # localhost only, not reachable from the network
+    volumes:
+      - pgdata:/var/lib/postgresql # Postgres 18+ path (not .../data)
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U catalist -d catalist"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+volumes:
+  pgdata:
