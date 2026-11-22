@@ -5,6 +5,20 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
+    services:
+      # same image + credentials as docker-compose.yml; tests create their own catalist_test DB
+      db:
+        image: pgvector/pgvector:0.8.7-pg18-trixie
+        env:
+          POSTGRES_USER: catalist
+          POSTGRES_PASSWORD: catalist
+        options: >-
+          --health-cmd "pg_isready -U catalist"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 15
+        ports:
+          - 5432:5432
     steps:
       # Actions pinned to commit SHAs: a tag can be moved to malicious code, a SHA cannot
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

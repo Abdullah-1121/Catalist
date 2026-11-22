@@ -7,7 +7,10 @@ authors = [
     { email = "muhammad11abdullah21@gmail.com" }
 ]
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "psycopg[binary]>=3.3.9",
+    "sqlalchemy>=2.1.9",
+]
 
 [project.scripts]
 catalist = "catalist:main"
