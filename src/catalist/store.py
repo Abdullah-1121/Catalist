@@ -32,6 +32,14 @@ class TurnRow(Base):
     text: Mapped[str]  # not Optional -> NOT NULL
 
 
+class LLMCacheRow(Base):
+    __tablename__ = "llm_cache"
+    # sha256 of (model settings + prompt): always 64 chars. The prompt itself (a whole
+    # meeting) is too big for a Postgres index entry (max 8191 bytes).
+    key: Mapped[str] = mapped_column(primary_key=True)
+    response: Mapped[str]
+
+
 def store_meeting(engine: Engine, meeting: Meeting) -> None:
     """Replace the meeting and all its turns. Safe to re-run (idempotent)."""
     with (
