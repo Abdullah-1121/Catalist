@@ -69,6 +69,8 @@ Speakers are letters (A-D). Roles (Project Manager, Industrial Designer, User In
 TEAM MEMORY: cards extracted from the meetings, in time order. CURRENT = not replaced later; "replaced by X" = a later card changed it.
 {memory}
 
+Memory can miss changes made late in a meeting. If the question asks how something ended, what was final, or whether something was kept, search the team's LAST meeting (d) for that topic before you answer.
+
 QUESTION: {question}
 
 STEPS SO FAR:
