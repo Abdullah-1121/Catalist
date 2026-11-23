@@ -71,7 +71,7 @@ Tokens per meeting (from the transcripts, measured 3.13 chars/token): ~9.5k of t
 
 | 1,000 meetings | Time | Cost |
 |---|---|---|
-| Free tier, one model (16k TPM) | 18M tokens / 16k per min ≈ **19 h** (measured pace with retries: ~30 h) | $0 |
+| Free tier, one model (16k TPM) | 18M tokens / 16k per min ≈ **19 h** (measured median pace with retries, 163 s per meeting: ~45 h on one model, ~23 h on two) | $0 |
 | Paid hosted open-weight 26–31B (≈ $0.10–0.30 per M input, $0.20–0.60 per M output; assumption, prices vary by provider) | minutes to ~1 h: teams run in parallel, limited only by provider rate limits | **≈ $2.50–7** |
 | Self-hosted (vLLM, same weights) | hours on one GPU; scales with GPUs | GPU time only |
 

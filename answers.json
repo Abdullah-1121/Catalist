@@ -26,17 +26,97 @@
     },
     {
       "question_id": "Q03",
-      "answer": "Speaker D first proposed replacing the titanium with a hard kind of plastic that looks like titanium to avoid losing the LCD screen. In the end, the team decided to use titanium-colored plastic for the back of the remote to meet cost targets.",
+      "answer": "B first proposed replacing the titanium with titanium-coloured plastic. Ultimately, the titanium was not kept, as the team decided to use titanium-coloured plastic for the back to meet the cost target.",
       "citations": [
         {
           "meeting_id": "TS3009d",
-          "quote": "change uh titanium to hard a hard kind of plastic looking like titanium than lose the L_C_D_"
+          "quote": "plastic coloured titanium, uh titanium-coloured plastic?"
         },
         {
           "meeting_id": "TS3009d",
           "quote": "So we have to make it cheaper."
         }
       ]
+    },
+    {
+      "question_id": "Q05",
+      "answer": "The team first settled on a combination of battery and kinetic energy, but eventually decided to use only batteries to reduce production costs. This change was proposed by A, as they stated that the energy source turned out to be batteries during meeting d.",
+      "citations": [
+        {
+          "meeting_id": "TS3007c",
+          "quote": "the energy, the combination between battery and kinetic"
+        },
+        {
+          "meeting_id": "TS3007d",
+          "quote": "the energy, which uh turn out to be"
+        }
+      ]
+    },
+    {
+      "question_id": "Q07",
+      "answer": "Ed (D) was asked to find out the cost of adding a display. In a later meeting, he mentioned that an LCD display would be very expensive, but he did not provide a specific numerical figure.",
+      "citations": [
+        {
+          "meeting_id": "IS1008c",
+          "quote": "do you know how much it costs, um, to to add a little display like this uh?"
+        },
+        {
+          "meeting_id": "IS1008d",
+          "quote": "L_C_ display is gonna be very expensive, it's gonna be"
+        }
+      ]
+    },
+    {
+      "question_id": "Q09",
+      "answer": "Initially, the team worked with a selling price of 25 Euros, but later settled on a sales price bracket of 35 to 50 Euros. Speaker D pushed hardest for a higher, more exclusive price, suggesting wholesale prices of 50 or 60 Euros to create an exclusive brand.",
+      "citations": [
+        {
+          "meeting_id": "IS1002b",
+          "quote": "Twenty-five Euros is the selling price,"
+        },
+        {
+          "meeting_id": "IS1002c",
+          "quote": "'Kay. Thirty five to fifty Euros is our sales bracket okay. So the"
+        },
+        {
+          "meeting_id": "IS1002b",
+          "quote": "Well, see I I see I I'm an advocate to make this an exclusive product. You know, let's let's sell"
+        }
+      ]
+    },
+    {
+      "question_id": "Q10",
+      "answer": "The team decided to target the real elderly people, specifically those aged 60 to 80. This group was chosen likely because they prioritize simplicity and learnability, and as noted in TS3003c#52, they would not pay more for advanced features like speech recognition.",
+      "citations": [
+        {
+          "meeting_id": "TS3003b",
+          "quote": "Because I think what we're going to design now is for people above sixty, maybe."
+        },
+        {
+          "meeting_id": "TS3003c",
+          "quote": "Well you can see here, our target group would not do that."
+        }
+      ]
+    },
+    {
+      "question_id": "Q11",
+      "answer": "The Project Manager (A) asked whether the requirement to use the remote only for television meant excluding DVD or just excluding internet-type things. This was later addressed in meeting d, where the team discussed whether the project met the standards set at the start.",
+      "citations": [
+        {
+          "meeting_id": "ES2011b",
+          "quote": "I'm not sure if they meant o onl use only for television as in not for D_V_D_ or just not internet type things. So I'll I'll check that and update you on the next"
+        },
+        {
+          "meeting_id": "ES2011d",
+          "quote": "decide whether this this whole this whole project we've been working on actually um meets the standards we were set at the start"
+        }
+      ]
+    },
+    {
+      "question_id": "Q12",
+      "answer": "",
+      "citations": [],
+      "error": "OpenAIAPIError: Error code: 503"
     },
     {
       "question_id": "Q13",
@@ -47,6 +127,50 @@
           "quote": "Can we just put it speech recognition in it as well, okay?"
         }
       ]
+    },
+    {
+      "question_id": "Q14",
+      "answer": "",
+      "citations": [],
+      "error": "OpenAIRateLimitError: Error code: 429"
+    },
+    {
+      "question_id": "Q15",
+      "answer": "The first full costing of the design was 15.5 Euros, which was over the 12.5 Euro budget limit. They removed the LCD screen to bring the production cost down to the budget.",
+      "citations": [
+        {
+          "meeting_id": "ES2016d",
+          "quote": "a L_C_D_ and scroll. So our total is"
+        },
+        {
+          "meeting_id": "ES2016d",
+          "quote": "Well there we go. Twelve point five."
+        }
+      ]
+    },
+    {
+      "question_id": "Q17",
+      "answer": "The touch screen was dropped in meeting c, where the team decided to keep voice recognition as the primary feature instead. B estimated that incorporating touch screen technology would cost upwards of 17.50 Euro per remote.",
+      "citations": [
+        {
+          "meeting_id": "ES2009c",
+          "quote": "Okay. Sorted. We will omit the touch screen in favour of voice recognition."
+        },
+        {
+          "meeting_id": "ES2009c",
+          "quote": "that o o of the two of 'em, the voice recognition"
+        },
+        {
+          "meeting_id": "ES2009c",
+          "quote": "in order to incorporate touch screen technology it's gonna cost us upwards of seventeen fifty Euro per remote,"
+        }
+      ]
+    },
+    {
+      "question_id": "Q19",
+      "answer": "",
+      "citations": [],
+      "error": "OpenAIAPIError: Error code: 503"
     },
     {
       "question_id": "Q21",
@@ -95,6 +219,16 @@
         {
           "meeting_id": "ES2002d",
           "quote": "um if we need to rethink anything at all. So um for this"
+        }
+      ]
+    },
+    {
+      "question_id": "Q25",
+      "answer": "The team decided to move away from literal fruit shapes to using patterns or colors that represent fruit, in order to make the remote more comfortable. They had previously been playing with fruit shapes with play-dough.",
+      "citations": [
+        {
+          "meeting_id": "ES2011d",
+          "quote": "We went with shape because we were having fun with the play-dough."
         }
       ]
     }
