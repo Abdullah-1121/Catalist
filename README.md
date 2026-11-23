@@ -1,5 +1,7 @@
 # Catalist meeting memory
 
+Interactive architecture diagram (LLM vs code steps, click a box for its source): download and open `docs/architecture.html` in a browser.
+
 An agent that turns meeting transcripts into queryable memory and briefs a team before its next meeting.
 
 - **Ingest** (LLM + code): each meeting is cut into ~10k-token windows; an open-weight LLM (Gemma 4 via Google AI Studio) extracts *cards*: proposal, decision, action, number, disagreement. Code validates every card, links it to exact transcript turns, and stores it in Postgres. Cards are append-only: a change is a new decision that `supersedes` the old one, so "current" is computed, never overwritten.
