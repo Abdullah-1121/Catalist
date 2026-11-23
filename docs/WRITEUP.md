@@ -79,7 +79,11 @@ Ingest is incremental: daily new meetings only cost their own windows (unchanged
 
 ## Three questions it got wrong, and why
 
-WRONG_PLACEHOLDER
+1. **E07 – "What colour did TS3012 pick in meeting c, and what happened to it?"** Agent: "no colour in c; yellow and black in d." Truth: yellow was chosen in c (TS3012c#593), presented again at the start of d (#13), then dropped later in d to meet the 12.50 € budget (#136, #429: "It's not yellow anymore"). **Why:** the reversal happened *inside* one meeting, late, during the costing; extraction for TS3012d produced only 5 cards and none recorded "yellow dropped", so memory said yellow was current, and keyword search found the early mention first. This is the "what is current" failure mode: a missing superseding card makes stale state look correct.
+2. **E04 – "Who first suggested a rechargeable remote?"** Agent: A. Truth: C asked first (TS3012b#311), A picked it up 5 turns later (#316). Run 1 answered C, run 2 answered A. **Why:** cards record who was *involved* (`who` = A, C, D), not who spoke *first*; "first" needs turn order, which the agent only sees if it reads the turns. Fix: put the first evidence turn's speaker on the card, or have the agent read the earliest cited turn before answering "who first".
+3. **E09 – "Why could they not raise the 12.50 € limit?"** Agent: "because they needed to stay under the cost limit" (circular). Truth: it is an order from the company's management to secure profit (TS3012d#89–90: D asks why, A answers). **Why:** the reason sits in a short question/answer exchange that was not extracted as a card (no `reason` on the number card), and the agent stopped after finding the limit itself.
+
+Also found and fixed during the build (not counted above): extraction under-recall (a third of long windows came back with exactly one card, e.g. TS3009b 2 → 24 cards after a code-level re-ask), and a missed `supersedes` link (TS3012c reverses b's "no LCD" decision but the extractor did not link them; the brief prompt now prefers the later of two contradicting decisions).
 
 ## Known limits / next steps
 
