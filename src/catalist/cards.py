@@ -36,6 +36,8 @@ class Card(BaseModel):
             raise ValueError("number card needs a value")
         if self.type == "disagreement" and not self.positions:
             raise ValueError("disagreement card needs positions")
+        if self.type == "disagreement" and len(set(self.who)) < 2:
+            raise ValueError("disagreement needs at least 2 speakers")
         if self.supersedes and self.type != "decision":
             raise ValueError("only a decision can supersede")
         return self

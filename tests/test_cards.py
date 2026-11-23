@@ -27,6 +27,7 @@ def test_good_card_is_accepted():
         {"value": None},  # rule 2: number without value
         {"evidence": []},  # rule 3: no evidence
         {"type": "disagreement", "positions": ""},  # rule 6: no positions
+        {"type": "disagreement", "positions": "B: too cheap"},  # needs 2+ people
         {"type": "proposal", "supersedes": "c1"},  # only a decision can replace one
         {"who": ["Speaker B"]},  # who = speaker letters only
     ],
