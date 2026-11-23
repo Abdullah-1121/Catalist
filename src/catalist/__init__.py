@@ -74,7 +74,14 @@ def run_query(args, engine, llm) -> None:
         for q in data["questions"]:
             if args.ids and q["question_id"] not in args.ids:
                 continue
-            result = ask(agent, q["team"], q["question"])
+            try:
+                result = ask(agent, q["team"], q["question"])
+            except Exception as error:  # noqa: BLE001 -- one bad reply must not stop the other questions
+                result = {
+                    "answer": "",
+                    "citations": [],
+                    "error": f"{type(error).__name__}: {error}"[:300],
+                }
             done[q["question_id"]] = {"question_id": q["question_id"], **result}
             out["answers"] = sorted(done.values(), key=lambda a: a["question_id"])
             ANSWERS.write_text(

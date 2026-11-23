@@ -105,16 +105,16 @@ def test_retry_gives_up_after_max_attempts():
         call_with_retry(flaky(errors), max_attempts=3, sleep=lambda s: None)
 
 
-def test_retry_on_server_overload_waits_10_seconds():
+def test_retry_on_server_overload_waits_30_seconds():
     # Google returned 503 during our first real call
     waits = []
     assert call_with_retry(flaky([overloaded_error()]), sleep=waits.append) == "ok"
-    assert waits == [10]
+    assert waits == [30]
 
 
-def test_retry_on_timeout_waits_10_seconds():
+def test_retry_on_timeout_waits_30_seconds():
     # a real call once hung for 5+ minutes; with a timeout set, the hang becomes this error
     waits = []
     timeout = OpenAITimeoutError(httpx.Request("POST", "https://example.test"))
     assert call_with_retry(flaky([timeout]), sleep=waits.append) == "ok"
-    assert waits == [10]
+    assert waits == [30]

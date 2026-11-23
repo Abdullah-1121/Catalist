@@ -49,11 +49,11 @@ class PostgresCache(BaseCache):
             session.execute(delete(LLMCacheRow))
 
 
-def call_with_retry(fn, max_attempts=5, sleep=time.sleep):
+def call_with_retry(fn, max_attempts=8, sleep=time.sleep):
     """Call fn() and retry temporary failures.
 
     429: wait the delay Google names in the message (or 60 s, the quota window).
-    5xx / timeout / network error: wait 10 s (usually back within seconds).
+    5xx / timeout / network error: wait 30 s (free-tier 503s come in bursts).
     """
     temporary = (
         openai.RateLimitError,
@@ -71,7 +71,7 @@ def call_with_retry(fn, max_attempts=5, sleep=time.sleep):
                 flush=True,
             )
             if not isinstance(error, openai.RateLimitError):
-                sleep(10)
+                sleep(30)  # Google free-tier 503s come in bursts of minutes
                 continue
             delay = RETRY_IN.search(str(error))
             sleep(float(delay.group(1)) + 1 if delay else 60)
