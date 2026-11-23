@@ -128,6 +128,12 @@ def ingest_team(engine: Engine, llm, paths: list[Path]) -> None:
                 SCHEMA, method="json_schema", include_raw=True
             )
             out = call_with_retry(partial(runnable.invoke, prompt))
+            found = len((out["parsed"] or {}).get("cards", []))
+            if found <= 2 and len(part) > 100:  # Gemma sometimes stops after one card
+                retry = f"{prompt}\n\nA first pass found only {found} card(s) in these {len(part)} turns. That is far too few: read the whole window again and list ALL cards."
+                second = call_with_retry(partial(runnable.invoke, retry))
+                if len((second["parsed"] or {}).get("cards", [])) > found:
+                    out = second
             if out["parsing_error"] or not out["parsed"]:
                 raw = {"content": str(out["raw"].content)[:20000]}
                 rejected.append(
