@@ -123,8 +123,9 @@ def run_eval(args, engine, llm) -> None:
         except Exception as error:  # noqa: BLE001 -- score it as a miss, keep going
             result = {"answer": f"ERROR {error}"[:200], "citations": []}
         text = result["answer"].lower()
+        # word-prefix match: "fall" also matches "falls"
         facts = sum(
-            any(re.search(rf"\b{re.escape(k)}\b", text) for k in group)
+            any(re.search(rf"\b{re.escape(k)}", text) for k in group)
             for group in q["must"]
         )
         rows.append(
