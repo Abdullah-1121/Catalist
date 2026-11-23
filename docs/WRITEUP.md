@@ -61,7 +61,7 @@ Own set: 10 questions on TS3012 (`eval/questions.json`), each with the expected 
 | 2 (after fixes) | 7 | 2 | 1 | **19/19**, every answer cited |
 
 Score run 2: **8/10** (half = 0.5). Fixes between runs came from the eval itself: code-made citations with 3 fallback tiers (an answer is never uncited), and a final step whose schema *requires* an answer (the LLM sometimes chose "answer" with no text).
-Hand-checked official answers (evidence turns in `eval/official_checks.md`): Q01, Q03, Q05, Q06, Q09, Q13, Q15, Q17, Q19, Q21, Q22, Q24, Q25 correct; Q07, Q08, Q10, Q11 half (right person/group, missed the figure, the reason, or the follow-up); Q02, Q12 wrong (late reversals in the final meeting missed). All citations valid.
+Hand-checked official answers (evidence turns in `eval/official_checks.md`): Q01, Q03, Q05, Q06, Q09, Q13, Q15, Q17, Q19, Q21, Q22, Q24, Q25 correct; Q07, Q08, Q10, Q11 half (right person/group, missed the figure, the reason, or the follow-up); Q02, Q12, Q16 wrong (late changes in the final meeting missed or misread). All citations valid.
 
 ## Cost and time to ingest 1,000 meetings
 
