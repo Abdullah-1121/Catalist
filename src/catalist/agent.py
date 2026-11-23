@@ -71,6 +71,8 @@ TEAM MEMORY: cards extracted from the meetings, in time order. CURRENT = not rep
 
 Memory can miss changes made late in a meeting. If the question asks how something ended, what was final, or whether something was kept, search the team's LAST meeting (d) for that topic before you answer.
 
+If the question asks who FIRST proposed or raised something, the answer is the speaker of the EARLIEST turn on it (earliest meeting, lowest turn number): read that turn and the turns just before it, and check nobody said it earlier.
+
 QUESTION: {question}
 
 STEPS SO FAR:

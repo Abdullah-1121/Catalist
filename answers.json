@@ -16,15 +16,25 @@
     },
     {
       "question_id": "Q02",
-      "answer": "The team initially leaned towards using plastic for the case material, but they eventually decided on rubber. They switched because the rubber material, described as a stress-ball-like spongy material, because it would be more durable and wouldn't break if dropped.",
+      "answer": "The team initially leaned towards plastic or titanium for a strong and sturdy case, but they switched to rubber (specifically spongy material) to ensure durability and allow the user to drop the device without it breaking.",
       "citations": [
         {
           "meeting_id": "ES2003c",
-          "quote": "The uh rubber material is the type of stress ball material, not just normal rubber. Forgot to say that."
+          "quote": "if we go with spongy, we can stress that you can drop this as many times as you want, it doesn't matter, it's spongy material, it's not gonna break, you know."
+        }
+      ]
+    },
+    {
+      "question_id": "Q03",
+      "answer": "Speaker D first proposed replacing the titanium with a hard kind of plastic that looks like titanium to avoid losing the LCD screen. In the end, the team decided to use titanium-colored plastic for the back of the remote to meet cost targets.",
+      "citations": [
+        {
+          "meeting_id": "TS3009d",
+          "quote": "change uh titanium to hard a hard kind of plastic looking like titanium than lose the L_C_D_"
         },
         {
-          "meeting_id": "ES2003c",
-          "quote": "if we go with spongy, we can stress that you can drop this as many times as you want, it doesn't matter, it's spongy material, it's not gonna break, you know."
+          "meeting_id": "TS3009d",
+          "quote": "So we have to make it cheaper."
         }
       ]
     },
