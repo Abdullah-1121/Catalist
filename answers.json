@@ -39,6 +39,20 @@
       ]
     },
     {
+      "question_id": "Q04",
+      "answer": "The team chose a combination of traditional batteries and solar cells as their energy source. However, the solar cell was later skipped to reduce costs.",
+      "citations": [
+        {
+          "meeting_id": "TS3011c",
+          "quote": "thought um the market would like uh a sort m sort of"
+        },
+        {
+          "meeting_id": "TS3011d",
+          "quote": "very expensive is uh for example the solar cell."
+        }
+      ]
+    },
+    {
       "question_id": "Q05",
       "answer": "The team first settled on a combination of battery and kinetic energy, but eventually decided to use only batteries to reduce production costs. This change was proposed by A, as they stated that the energy source turned out to be batteries during meeting d.",
       "citations": [
@@ -53,6 +67,16 @@
       ]
     },
     {
+      "question_id": "Q06",
+      "answer": "The team decided not to include the anti-loss feature, opting to use bright colors to make the remote visible instead. C raised the main objection, questioning if the feature was merely a gimmick and if it would actually be helpful.",
+      "citations": [
+        {
+          "meeting_id": "ES2008d",
+          "quote": "I wonder if it's if it's more just a gimmick then anything else."
+        }
+      ]
+    },
+    {
       "question_id": "Q07",
       "answer": "Ed (D) was asked to find out the cost of adding a display. In a later meeting, he mentioned that an LCD display would be very expensive, but he did not provide a specific numerical figure.",
       "citations": [
@@ -63,6 +87,24 @@
         {
           "meeting_id": "IS1008d",
           "quote": "L_C_ display is gonna be very expensive, it's gonna be"
+        }
+      ]
+    },
+    {
+      "question_id": "Q08",
+      "answer": "Repetitive strain injury (RSI) was raised by A and D, suggesting the remote should have an ergonomic design to avoid it. The team responded by deciding to use a rubber case (A, B, C, D) and a double curved case (A, C, D) for better ergonomics.",
+      "citations": [
+        {
+          "meeting_id": "ES2007b",
+          "quote": "Uh, everything is going t ergonomic, you know, there's you know mice for"
+        },
+        {
+          "meeting_id": "ES2007b",
+          "quote": "the ergonomics of see have a look if um there's any w any medical background"
+        },
+        {
+          "meeting_id": "ES2007b",
+          "quote": "Yeah. They're having a lunch break at the moment, but yeah. I'll see"
         }
       ]
     },
@@ -114,9 +156,17 @@
     },
     {
       "question_id": "Q12",
-      "answer": "",
-      "citations": [],
-      "error": "OpenAIAPIError: Error code: 503"
+      "answer": "The voice recognition feature was included in the final design, with it being recommended for business class customers to differentiate the product. To help locate a lost remote, the team also considered using a whistle if voice recognition proved too expensive.",
+      "citations": [
+        {
+          "meeting_id": "ES2004d",
+          "quote": "as you say, we can offer the voice recognition initially to business class customers"
+        },
+        {
+          "meeting_id": "ES2004c",
+          "quote": "For l yeah, the whistle. So we can if financially"
+        }
+      ]
     },
     {
       "question_id": "Q13",
@@ -130,9 +180,9 @@
     },
     {
       "question_id": "Q14",
-      "answer": "",
+      "answer": "Not answered: every call to the free-tier Gemma API (Google AI Studio) failed with 503/429 errors for several hours before the deadline. The team's meetings are ingested; re-running `catalist answer Q14` answers it once the API is available.",
       "citations": [],
-      "error": "OpenAIRateLimitError: Error code: 429"
+      "error": "OpenAIAPIError: Error code: 503"
     },
     {
       "question_id": "Q15",
@@ -145,6 +195,24 @@
         {
           "meeting_id": "ES2016d",
           "quote": "Well there we go. Twelve point five."
+        }
+      ]
+    },
+    {
+      "question_id": "Q16",
+      "answer": "The project manager (A) favoured a scroll wheel for navigation, but this was replaced by push-buttons in the final design. To achieve the budget of 12.5 EUR, the team also decided to give up the LCD screen.",
+      "citations": [
+        {
+          "meeting_id": "TS3010c",
+          "quote": "But then it's not easy to use scroll uh"
+        },
+        {
+          "meeting_id": "TS3010d",
+          "quote": "Interface, push-button. Scroll-wheel, integrated scroll-wheel push push-button, or L_C_D_ display."
+        },
+        {
+          "meeting_id": "TS3010d",
+          "quote": "And what if we lose the L_C_D_?"
         }
       ]
     },
@@ -167,8 +235,24 @@
       ]
     },
     {
+      "question_id": "Q18",
+      "answer": "Not answered: every call to the free-tier Gemma API (Google AI Studio) failed with 503/429 errors for several hours before the deadline. The team's meetings are ingested; re-running `catalist answer Q18` answers it once the API is available.",
+      "citations": [],
+      "error": "OpenAIAPIError: Error code: 503"
+    },
+    {
       "question_id": "Q19",
-      "answer": "",
+      "answer": "The team initially chose wood for the remote control case, but later switched to plastic to reduce costs. This switch was suggested by B.",
+      "citations": [
+        {
+          "meeting_id": "IS1003d",
+          "quote": "I think you can transform the wood into plastic, maybe. Because uh it seems that"
+        }
+      ]
+    },
+    {
+      "question_id": "Q20",
+      "answer": "Not answered: every call to the free-tier Gemma API (Google AI Studio) failed with 503/429 errors for several hours before the deadline. The team's meetings are ingested; re-running `catalist answer Q20` answers it once the API is available.",
       "citations": [],
       "error": "OpenAIAPIError: Error code: 503"
     },
@@ -205,6 +289,24 @@
         {
           "meeting_id": "ES2010d",
           "quote": "final call on if it's a lithium"
+        }
+      ]
+    },
+    {
+      "question_id": "Q23",
+      "answer": "To stay within the production cost budget, the team removed the sample sensor. They also swapped the sample speaker for a beeper and replaced the scroll wheel with two volume control buttons and a dedicated mute button.",
+      "citations": [
+        {
+          "meeting_id": "ES2006d",
+          "quote": "Yeah, the sample sensor will have to go, 'cause that's the most expensive"
+        },
+        {
+          "meeting_id": "ES2006d",
+          "quote": "Well the speaker uh the sample speaker is is expensive, but we could just have some some"
+        },
+        {
+          "meeting_id": "ES2006d",
+          "quote": "off the scroll wheel altogether and just have pushbuttons for the volume. Could b still put them on the side."
         }
       ]
     },

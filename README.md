@@ -12,6 +12,8 @@ See `docs/WRITEUP.md` for the architecture, the decisions and where things broke
 
 Requirements: Docker, [uv](https://docs.astral.sh/uv/), a Google AI Studio API key (free tier works).
 
+> **Free-tier note:** the free Gemma endpoint was heavily overloaded (503/429) before the deadline, so Q14, Q18 and Q20 in `answers.json` are marked unanswered. Their teams are ingested; `uv run --env-file .env catalist answer Q14 Q18 Q20` fills them in when the API responds. Results and hand checks: `docs/WRITEUP.md`, `eval/official_checks.md`.
+
 ```bash
 cp .env.example .env               # fill in LLM_API_KEY (and check the other values)
 docker compose up -d --wait        # Postgres 18 + pgvector on localhost:5432

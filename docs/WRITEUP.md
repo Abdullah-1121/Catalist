@@ -61,7 +61,9 @@ Own set: 10 questions on TS3012 (`eval/questions.json`), each with the expected 
 | 2 (after fixes) | 7 | 2 | 1 | **19/19**, every answer cited |
 
 Score run 2: **8/10** (half = 0.5). Fixes between runs came from the eval itself: code-made citations with 3 fallback tiers (an answer is never uncited), and a final step whose schema *requires* an answer (the LLM sometimes chose "answer" with no text).
-Hand-checked official answers (evidence turns in `eval/official_checks.md`): Q01, Q03, Q04, Q05, Q06, Q09, Q13, Q15, Q17, Q19, Q21, Q22, Q24, Q25 correct; Q07, Q08, Q10, Q11, Q23 half (right person/group, missed the figure, the reason, or the follow-up); Q02, Q12, Q16 wrong (late changes in the final meeting missed or misread). All citations valid.
+Official questions: **22 of 25 answered**, all hand-checked against the transcripts (evidence in `eval/official_checks.md`): 14 correct (Q01, Q03, Q04, Q05, Q06, Q09, Q13, Q15, Q17, Q19, Q21, Q22, Q24, Q25), 5 half (Q07, Q08, Q10, Q11, Q23), 3 wrong (Q02, Q12, Q16: late changes in the final meeting missed or misread). **47/47 citations verified** exact against the transcripts (`catalist check`).
+
+**Q14, Q18, Q20 are unanswered because of free-tier limits, not the design.** In the last hours before the deadline, Google AI Studio's free Gemma endpoint returned 503 (overloaded) and 429 (rate limit) on almost every call, for both the 26B and 31B models, even with ingest stopped and 8 retries per call. Their teams (IS1009, ES2014, ES2008) are fully ingested; `catalist answer Q14 Q18 Q20` answers them when the API is available. On a paid or self-hosted endpoint (same weights, `LLM_BASE_URL` change) this would not happen.
 
 ## Cost and time to ingest 1,000 meetings
 
