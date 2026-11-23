@@ -18,3 +18,4 @@
 | Q09 IS1002 | correct | 25 € at first (IS1002b A: "Is twenty-five Euros a mid-market price for a remote?"), 35–50 € later (IS1002c A: "Thirty five to fifty Euros is our sales bracket okay."), D pushed for exclusive (IS1002b D: "let's sell this wholesale for for fifty Euros, sixty Euros"). |
 | Q15 ES2016 | correct | ES2016d: "So our total is fifteen point five", limit "Twelve and a half Euros is what supposed to cost us", removed the L_C_D_ ("So we may not need the L_C_D_ display?" → "Well there we go. Twelve point five."). |
 | Q17 ES2009 | correct | Dropped in ES2009c (A: "We will omit the touch screen in favour of voice recognition."), estimate B: "upwards of seventeen fifty Euro per remote". |
+| Q19 IS1003 | correct | Wood chosen in c (A: "Okay. So wood. And what about the buttons?"), replaced by plastic in d during costing, suggested by B: "I think you can transform the wood into plastic, maybe." (C: "Plastic is free."). |
