@@ -40,6 +40,8 @@ def main() -> None:
     engine = create_engine(os.environ["DATABASE_URL"])
     Base.metadata.create_all(engine)
     llm = chat(engine, args.model)
+    if args.command in ("eval", "check"):
+        return run_eval(args, engine, llm)
     if args.command != "ingest":
         return run_query(args, engine, llm)
     for team in args.teams:
@@ -92,3 +94,43 @@ def run_query(args, engine, llm) -> None:
                 flush=True,
             )
     ANSWERS.write_text(json.dumps(out, indent=2))
+
+
+def run_eval(args, engine, llm) -> None:
+    import re
+    import time
+
+    from catalist.agent import ask, build, valid_citations
+
+    if args.command == "check":
+        for a in json.loads(ANSWERS.read_text())["answers"]:
+            ok = valid_citations(engine, a["citations"])
+            print(f"{a['question_id']}: {ok}/{len(a['citations'])} citations valid")
+        return
+    agent, rows = build(engine, llm), []
+    for q in json.loads(Path("eval/questions.json").read_text()):
+        start = time.time()
+        try:
+            result = ask(agent, q["team"], q["question"])
+        except Exception as error:  # noqa: BLE001 -- score it as a miss, keep going
+            result = {"answer": f"ERROR {error}"[:200], "citations": []}
+        text = result["answer"].lower()
+        facts = sum(
+            any(re.search(rf"\b{re.escape(k)}\b", text) for k in group)
+            for group in q["must"]
+        )
+        rows.append(
+            {
+                **q,
+                **result,
+                "facts_found": f"{facts}/{len(q['must'])}",
+                "citations_valid": f"{valid_citations(engine, result['citations'])}/{len(result['citations'])}",
+                "seconds": round(time.time() - start),
+            }
+        )
+        print(
+            f"{q['id']}: facts {rows[-1]['facts_found']}, citations {rows[-1]['citations_valid']}, "
+            f"{rows[-1]['seconds']}s | {result['answer']}",
+            flush=True,
+        )
+        Path("eval/results.json").write_text(json.dumps(rows, indent=2))

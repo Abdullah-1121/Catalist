@@ -298,3 +298,19 @@ def brief(engine: Engine, llm, team: str, before_order: int) -> str:
                 if cites:  # a point without a verifiable source is dropped, not printed uncited
                     lines.append(f"- {point['text']} [{'; '.join(cites[:2])}]")
         return "\n".join(lines)
+
+
+def valid_citations(engine: Engine, citations: list[dict]) -> int:
+    """How many citations pass the official rule: >= 6 words, exact, inside one turn of that meeting."""
+    from catalist.quotes import is_exact
+
+    with Session(engine) as session:
+        return sum(
+            any(
+                is_exact(c["quote"], t.text)
+                for t in session.scalars(
+                    select(TurnRow).where(TurnRow.meeting_id == c["meeting_id"])
+                )
+            )
+            for c in citations
+        )
