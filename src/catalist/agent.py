@@ -71,7 +71,7 @@ TEAM MEMORY: cards extracted from the meetings, in time order. CURRENT = not rep
 
 Memory can miss changes made late in a meeting. If the question asks how something ended, what was final, or whether something was kept, search the team's LAST meeting (d) for that topic before you answer.
 
-If the question asks who FIRST proposed or raised something, the answer is the speaker of the EARLIEST turn on it (earliest meeting, lowest turn number): read that turn and the turns just before it, and check nobody said it earlier.
+For "who proposed / suggested / raised" questions use "first said by" (taken from the transcript), not the card's list of people involved. If the question asks who FIRST proposed or raised something, the answer is the speaker of the EARLIEST turn on it (earliest meeting, lowest turn number): read that turn and the turns just before it, and check nobody said it earlier.
 
 QUESTION: {question}
 
@@ -98,7 +98,13 @@ def overlap(a: str, b: str) -> float:
     return len(x & y) / (len(x | y) or 1)
 
 
-def memory_text(cards: list[CardRow]) -> str:
+def first_turn(card: CardRow) -> str:
+    return min(card.evidence, key=lambda t: int(t.split("#")[1]))
+
+
+def memory_text(cards: list[CardRow], speakers: dict[str, str] | None = None) -> str:
+    """speakers: turn_id -> letter, so "who said it" comes from the transcript, not the LLM."""
+    speakers = speakers or {}
     live = {c.card_id for c in live_cards(cards)}
     replaced_by = {c.supersedes: c.card_id for c in cards if c.supersedes}
     replaced_by |= {c.answers: c.card_id for c in cards if c.answers}
@@ -110,9 +116,18 @@ def memory_text(cards: list[CardRow]) -> str:
         )
         lines.append(
             f"{c.topic} | [{c.card_id}] {c.meeting_id} {c.type} ({','.join(c.who)}){value}: "
-            f"{c.summary} {c.reason} {c.positions} | {status} | evidence {' '.join(c.evidence)}"
+            f"{c.summary} {c.reason} {c.positions} | {status} | "
+            f"first said by {speakers.get(first_turn(c), '?')} at {first_turn(c)} | evidence {' '.join(c.evidence)}"
         )
     return "\n".join(lines) or "(no cards)"
+
+
+def speakers_of(session: Session, cards: list[CardRow]) -> dict[str, str]:
+    ids = [first_turn(c) for c in cards]
+    rows = session.execute(
+        select(TurnRow.turn_id, TurnRow.speaker).where(TurnRow.turn_id.in_(ids))
+    )
+    return dict(rows.all())
 
 
 def search(session: Session, team: str, query: str, limit: int = 8) -> str:
@@ -166,10 +181,11 @@ def build(engine: Engine, llm):
             cards = list(
                 session.scalars(select(CardRow).where(CardRow.team == state["team"]))
             )
+            speakers = speakers_of(session, cards)
         last = len(state["steps"]) >= MAX_STEPS
         prompt = PROMPT.format(
             team=state["team"],
-            memory=memory_text(cards),
+            memory=memory_text(cards, speakers),
             question=state["question"],
             steps="\n\n".join(state["steps"]) or "(none)",
             force="You have used all your steps: you MUST answer now." if last else "",

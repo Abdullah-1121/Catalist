@@ -55,3 +55,12 @@ def test_superseded_decision_and_answered_action_are_not_live():
     assert [c.card_id for c in live_cards(cards)] == ["M-2", "M-4"]
     text = registry_text(cards)
     assert "red" in text and "yellow" not in text
+
+
+def test_memory_shows_who_spoke_the_earliest_evidence_turn():
+    from catalist.agent import memory_text
+
+    card = row("M-1", "proposal", "use plastic")
+    card.evidence = ["M#40", "M#12"]
+    text = memory_text([card], {"M#12": "B"})
+    assert "first said by B at M#12" in text
