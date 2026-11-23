@@ -53,11 +53,29 @@ Quotes are the clearest case: the LLM paraphrases and "cleans up" disfluent spee
 
 ## Evaluation
 
-RESULTS_PLACEHOLDER
+Own set: 10 questions on TS3012 (`eval/questions.json`), each with the expected answer and the exact turns that prove it, checked by hand. `catalist eval` runs the agent, auto-checks expected facts (keywords) and verifies every citation against the transcript; the final verdict is by hand (`eval/results.json`).
+
+| Run | Correct | Half | Wrong | Valid citations |
+|---|---|---|---|---|
+| 1 (first agent version) | 8 | 0 | 2 (empty answers) | 13/13, but 3 answers had none |
+| 2 (after fixes) | 7 | 2 | 1 | **19/19**, every answer cited |
+
+Score run 2: **8/10** (half = 0.5). Fixes between runs came from the eval itself: code-made citations with 3 fallback tiers (an answer is never uncited), and a final step whose schema *requires* an answer (the LLM sometimes chose "answer" with no text).
+Hand-checked official answers so far: Q01, Q13, Q21, Q22, Q24 all correct, each with valid citations (the evidence turns are listed in `eval/official_checks.md`).
 
 ## Cost and time to ingest 1,000 meetings
 
-COST_PLACEHOLDER
+Measured (free tier, Gemma 4 26B/31B, 2026-11-23): median **111 s per meeting**, mean 185 s, worst 843 s, almost all of it waiting on rate limits (16k input tokens/min per model) and 503/429 retries; ~1.5 windows per meeting; 9% of cards rejected by the checks.
+
+Tokens per meeting (from the transcripts, measured 3.13 chars/token): ~9.5k of turns, plus ~3k of instructions + registry per window (×1.5), plus re-asks on lazy windows (~1 in 3 windows) → **~18k input + ~2.5k output tokens per meeting**.
+
+| 1,000 meetings | Time | Cost |
+|---|---|---|
+| Free tier, one model (16k TPM) | 18M tokens / 16k per min ≈ **19 h** (measured pace with retries: ~30 h) | $0 |
+| Paid hosted open-weight 26–31B (≈ $0.10–0.30 per M input, $0.20–0.60 per M output; assumption, prices vary by provider) | minutes to ~1 h: teams run in parallel, limited only by provider rate limits | **≈ $2.50–7** |
+| Self-hosted (vLLM, same weights) | hours on one GPU; scales with GPUs | GPU time only |
+
+Ingest is incremental: daily new meetings only cost their own windows (unchanged meetings are skipped by content hash).
 
 ## Three questions it got wrong, and why
 

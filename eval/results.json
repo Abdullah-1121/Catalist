@@ -1,0 +1,303 @@
+[
+  {
+    "id": "E01",
+    "team": "TS3012",
+    "question": "What role does each speaker (A, B, C, D) have in team TS3012?",
+    "expected": "A Project Manager, B User Interface Designer, C Industrial Designer, D Marketing Expert (TS3012a#0, #4, #6, #8).",
+    "must": [
+      [
+        "project manager"
+      ],
+      [
+        "interface"
+      ],
+      [
+        "industrial"
+      ],
+      [
+        "marketing"
+      ]
+    ],
+    "answer": "Speaker A is the Project Manager, speaker B is the User Interface Designer, speaker C is the Industrial Designer, and speaker D is the Marketing Expert.",
+    "citations": [
+      {
+        "meeting_id": "TS3012a",
+        "quote": "I'll be your Project Manager for today, for this project. My name is Mark"
+      },
+      {
+        "meeting_id": "TS3012a",
+        "quote": "Nick Broer, User Interface Designer. I'm going to uh look at the technical design"
+      },
+      {
+        "meeting_id": "TS3012a",
+        "quote": "Dirk Meinfeld. Um I will be uh Pr Project the Marketing Expert."
+      }
+    ],
+    "facts_found": "4/4",
+    "citations_valid": "3/3",
+    "seconds": 202
+  },
+  {
+    "id": "E02",
+    "team": "TS3012",
+    "question": "What selling price and production cost was team TS3012 given at the start?",
+    "expected": "Selling price 25 euros, production cost about 12.50 euros (TS3012a#104).",
+    "must": [
+      [
+        "25",
+        "twenty five",
+        "twenty-five"
+      ],
+      [
+        "12.5",
+        "12,5",
+        "twelve and a half"
+      ]
+    ],
+    "answer": "At the start, the selling price was set at 25 Euros and the production cost was approximately 12.5 Euros.",
+    "citations": [
+      {
+        "meeting_id": "TS3012a",
+        "quote": "Euros. That's for you. The production price,"
+      },
+      {
+        "meeting_id": "TS3012a",
+        "quote": "we're going to Selling price, twenty five Euros."
+      },
+      {
+        "meeting_id": "TS3012c",
+        "quote": "uh uh th uh the shape. Of course uh the more curves"
+      }
+    ],
+    "facts_found": "2/2",
+    "citations_valid": "3/3",
+    "seconds": 5
+  },
+  {
+    "id": "E03",
+    "team": "TS3012",
+    "question": "Which two features did team TS3012 drop in their second meeting, and why?",
+    "expected": "LCD screen (big, uses batteries) and speech recognition (not mature / too complex) (TS3012b#112, #155).",
+    "must": [
+      [
+        "lcd"
+      ],
+      [
+        "speech"
+      ]
+    ],
+    "answer": "In their second meeting (TS3012b), the team dropped the LCD screen due to its high cost and power consumption, and they also decided against speech recognition because of its complexity and the immaturity of the technology.",
+    "citations": [
+      {
+        "meeting_id": "TS3012b",
+        "quote": "Oh yeah. I think we should lose the L_C_D_ screen, like you said. I think"
+      },
+      {
+        "meeting_id": "TS3012b",
+        "quote": "So I think implementing speech recognition is such a small um apparatus, it's very hard to"
+      },
+      {
+        "meeting_id": "TS3012b",
+        "quote": "Just to do research into both, w what it costs and what it takes for"
+      }
+    ],
+    "facts_found": "2/2",
+    "citations_valid": "3/3",
+    "seconds": 11
+  },
+  {
+    "id": "E04",
+    "team": "TS3012",
+    "question": "Who in team TS3012 first suggested a rechargeable remote, and what energy source did the team finally choose?",
+    "expected": "C (Industrial Designer) suggested it (TS3012b#311); they chose regular/basic batteries (TS3012c#65, #383).",
+    "must": [
+      [
+        "c"
+      ],
+      [
+        "regular",
+        "basic",
+        "normal"
+      ]
+    ],
+    "answer": "A first suggested using rechargeable batteries. The team ultimately decided to use regular batteries as the energy source.",
+    "citations": [
+      {
+        "meeting_id": "TS3012b",
+        "quote": "Maybe we should what what could be possible is one with rechargeable batteries for example."
+      }
+    ],
+    "facts_found": "1/2",
+    "citations_valid": "1/1",
+    "seconds": 72
+  },
+  {
+    "id": "E05",
+    "team": "TS3012",
+    "question": "Why did team TS3012 reject kinetic energy for the remote?",
+    "expected": "A: remotes lie still almost all the time, unlike watches that move (TS3012c#56).",
+    "must": [
+      [
+        "still",
+        "move",
+        "lie"
+      ]
+    ],
+    "answer": "Team TS3012 rejected kinetic energy because A argued that remotes lie still about ninety-nine percent of the time, unlike watches which are constantly moving, and expressed doubt that it would provide enough energy.",
+    "citations": [
+      {
+        "meeting_id": "TS3012c",
+        "quote": "I mean remotes lie still I think like ninety nine percent of the time."
+      }
+    ],
+    "facts_found": "1/1",
+    "citations_valid": "1/1",
+    "seconds": 191
+  },
+  {
+    "id": "E06",
+    "team": "TS3012",
+    "question": "What material did team TS3012 choose for the case, and why?",
+    "expected": "Rubber: it softens falls (remotes fall a lot) and gives a spongy feel for the young target group (TS3012c#107, #116, #293).",
+    "must": [
+      [
+        "rubber"
+      ],
+      [
+        "fall",
+        "drop",
+        "break",
+        "spongy",
+        "soft"
+      ]
+    ],
+    "answer": "The team chose rubber as the material for the case. The reasoning behind this was a debate about the durability and protective qualities of rubber versus hard plastic, with A arguing that rubber would soften falls.",
+    "citations": [
+      {
+        "meeting_id": "TS3012c",
+        "quote": "Then rubber would be the best as a material indeed."
+      }
+    ],
+    "facts_found": "2/2",
+    "citations_valid": "1/1",
+    "seconds": 298
+  },
+  {
+    "id": "E07",
+    "team": "TS3012",
+    "question": "What colour did team TS3012 pick for the remote in meeting c, and what happened to it in the final meeting?",
+    "expected": "Yellow (TS3012c#593); in d it had to go to meet the 12.50 budget - A preferred keeping rubber over the colour, and it is 'not yellow anymore' (TS3012d#136, #429).",
+    "must": [
+      [
+        "yellow"
+      ],
+      [
+        "budget",
+        "cost",
+        "lose",
+        "dropped",
+        "removed",
+        "not yellow",
+        "no longer"
+      ]
+    ],
+    "answer": "No color was decided upon in meeting c, but in the final meeting (meeting d), the team decided the remote control color should be yellow and black.",
+    "citations": [
+      {
+        "meeting_id": "TS3012d",
+        "quote": "we agreed that the colour should be b uh yellow and black."
+      },
+      {
+        "meeting_id": "TS3012b",
+        "quote": "diverse people. I think universal remote control should be"
+      },
+      {
+        "meeting_id": "TS3012a",
+        "quote": "project is about we need design a remote control"
+      }
+    ],
+    "facts_found": "1/2",
+    "citations_valid": "3/3",
+    "seconds": 108
+  },
+  {
+    "id": "E08",
+    "team": "TS3012",
+    "question": "What name did team TS3012 give the product and who came up with it?",
+    "expected": "Triple R (Real Reaction), proposed by C (TS3012d#474, #507), agreed by A (#523).",
+    "must": [
+      [
+        "triple r",
+        "rrr"
+      ],
+      [
+        "c"
+      ]
+    ],
+    "answer": "The team decided on the product name 'triple R'. Speaker C came up with it, suggesting it as 'triple R_' and explaining it as 'Real Reaction remote control'.",
+    "citations": [
+      {
+        "meeting_id": "TS3012d",
+        "quote": "The triple R_. Real Reaction remotes control. Triple R_."
+      },
+      {
+        "meeting_id": "TS3012d",
+        "quote": "I think we're all in agreement about the triple R_."
+      }
+    ],
+    "facts_found": "2/2",
+    "citations_valid": "2/2",
+    "seconds": 566
+  },
+  {
+    "id": "E09",
+    "team": "TS3012",
+    "question": "In team TS3012's final meeting, what production cost limit did they have to get under, and why could they not raise it?",
+    "expected": "Under 12.50 euros; it is an order from the company to ensure profit (TS3012d#48, #90).",
+    "must": [
+      [
+        "12.5",
+        "12,5",
+        "twelve and a half"
+      ],
+      [
+        "profit",
+        "order",
+        "boss",
+        "company"
+      ]
+    ],
+    "answer": "In the final meeting, the team had to get the production cost under 12.5 Euros. They could not raise it because they needed to stay under the cost limit, which resulted in A having to remove the special color option.",
+    "citations": [
+      {
+        "meeting_id": "TS3012d",
+        "quote": "to have production cost of twelve and a half Euros"
+      }
+    ],
+    "facts_found": "1/2",
+    "citations_valid": "1/1",
+    "seconds": 233
+  },
+  {
+    "id": "E10",
+    "team": "TS3012",
+    "question": "Did team TS3012 use titanium for the case?",
+    "expected": "No: A says 'we're not using titanium' (TS3012c#335); the case is rubber.",
+    "must": [
+      [
+        "no",
+        "not"
+      ]
+    ],
+    "answer": "No, the team decided to use rubber as the material for the remote control. A participant explicitly stated that they were not using titanium.",
+    "citations": [
+      {
+        "meeting_id": "TS3012c",
+        "quote": "not d we're not using titanium."
+      }
+    ],
+    "facts_found": "1/1",
+    "citations_valid": "1/1",
+    "seconds": 68
+  }
+]

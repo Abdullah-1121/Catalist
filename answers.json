@@ -1,4 +1,79 @@
 {
-  "answers": [],
+  "answers": [
+    {
+      "question_id": "Q01",
+      "answer": "The team decided to drop the speech recognition to save 4.00 EUR and kept the LCD screen because losing it would have resulted in needing many extra buttons, thus compromising their whole concept.",
+      "citations": [
+        {
+          "meeting_id": "TS3006d",
+          "quote": "We lose our whole concept. Uh so No we just We keep the L_C_D_."
+        },
+        {
+          "meeting_id": "TS3006d",
+          "quote": "we haven't really integrated this the speech into the system, so we can might as well s drop that."
+        }
+      ]
+    },
+    {
+      "question_id": "Q13",
+      "answer": "Yes, speech recognition was included in the final design. The team last reversed their position on including it during meeting TS3004c.",
+      "citations": [
+        {
+          "meeting_id": "TS3004c",
+          "quote": "Can we just put it speech recognition in it as well, okay?"
+        }
+      ]
+    },
+    {
+      "question_id": "Q21",
+      "answer": "C checked the prices of the components and reported that the total cost for a version with all functionalities would be approximately 15 dollars. The team ultimately decided to remove the LCD display from the design to reduce cost and increase design liberty.",
+      "citations": [
+        {
+          "meeting_id": "IS1007c",
+          "quote": "I will check the prices the um the prices difference"
+        },
+        {
+          "meeting_id": "IS1007d",
+          "quote": "total cost if you if you want all the fuct functionalities will be about uh fifteen dollars."
+        },
+        {
+          "meeting_id": "IS1007d",
+          "quote": "Well I I I think uh it's the"
+        }
+      ]
+    },
+    {
+      "question_id": "Q22",
+      "answer": "B suggested a small lithium battery. D preferred Triple A batteries to make the remote thinner. The final decision was to use a lithium battery.",
+      "citations": [
+        {
+          "meeting_id": "ES2010a",
+          "quote": "Can you with a small lithium battery?"
+        },
+        {
+          "meeting_id": "ES2010a",
+          "quote": "Yeah, if we want it to be more thin, then we'd"
+        },
+        {
+          "meeting_id": "ES2010d",
+          "quote": "final call on if it's a lithium"
+        }
+      ]
+    },
+    {
+      "question_id": "Q24",
+      "answer": "The team first agreed on using regular batteries as the power source. The Project Manager (Laura, B) liked the idea of incorporating a hybrid power system combining kinetic energy and battery backup, though the final design ultimately used only batteries due to cost constraints.",
+      "citations": [
+        {
+          "meeting_id": "ES2002b",
+          "quote": "very f use already used to the idea of buying batteries"
+        },
+        {
+          "meeting_id": "ES2002d",
+          "quote": "um if we need to rethink anything at all. So um for this"
+        }
+      ]
+    }
+  ],
   "brief": "Brief for team TS3012, before its final meeting\n\nDECISIONS\n- The team agrees to place the power button at the top for accessibility (A,C,D). [TS3012b: \"that's true, you should I think the bu the power button should be on top,\"]\n- The team decides to use regular batteries as the energy source (A). [TS3012c: \"Yeah. Okay, anyway. Uh energy, we choose regular regular batteries. The\"]\n- The team decides to exclude an LCD screen due to high cost and power consumption (A,C,D). [TS3012b: \"Oh yeah. I think we should lose the L_C_D_ screen, like you said. I think\"]\n- The team decides to consider an LCD screen to satisfy the target group (A,B,C,D). [TS3012c: \"let's say because it is uh very hot in n our target group\"]\n- The team decides to use rubber as the material (A,B,C,D). [TS3012c: \"Then rubber would be the best as a material\"]\n- The team decides to round off the edges of the design (A,B,C,D). [TS3012c: \"the edges are really um they might stick out on the\"]\n- The team decides not to implement speech recognition due to complexity and lack of technology maturity (A,B,D). [TS3012b: \"So I think implementing speech recognition is such a small um apparatus, it's very hard to\"]\n- The team decides the remote control should be universal (A,C). [TS3012b: \"diverse people. I think universal remote control should be\"]\n\nWHAT CHANGED\n- The decision to consider an LCD screen has replaced the decision to exclude it (A,B,C,D). [TS3012c: \"let's say because it is uh very hot in n our target group\"]\n\nOPEN ACTIONS\n- C's task is to develop a components concept (C). [TS3012b: \"have to come up with a components concept,\"]\n- C will investigate the space requirements and costs for an LCD screen (C). [TS3012b: \"Also keep in mind again, the L_C_D_ screen is very flat, but\"]\n- A will research the feasibility and cost of both an LCD screen and speech recognition (A). [TS3012b: \"Just to do research into both, w what it costs and what it takes for\"]\n- B will think of a name for the product (B). [TS3012b: \"So I think of a name.\"]\n- C will investigate the feasibility and costs of a rechargeable battery system (C). [TS3012b: \"Yes. I'm going to try to find that out. I'm not sure\"]\n- A will find out what customers are willing to pay for a rechargeable option (A). [TS3012b: \"can find out i what people are willing to pay. We are going for\"]\n- A's task is to look into the feasibility of changeable covers and whether to can change just the sleeve (A). [TS3012b: \"something I have to look into. Either either change both the buttons and and the cover or just the\"]\n- B's task is to present ideas on design/curves/shapes next time (B). [TS3012b: \"I'll put some on paper and present them next time\"]\n\nOPEN DISAGREEMENTS\n- The team discusses the suitability of a basic battery vs a rechargeable one (A,B,C,D). [TS3012c: \"Only basic battery? Okay, but I think this is not a r\"]"
 }
