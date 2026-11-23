@@ -1,6 +1,8 @@
 from typing import Annotated, Literal, Self
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
+
+from catalist.topics import normalise_topic
 
 
 class Card(BaseModel):
@@ -29,6 +31,14 @@ class Card(BaseModel):
     evidence: list[int] = Field(
         min_length=1, description="Window turn numbers that support this card"
     )
+
+    @field_validator("topic")
+    @classmethod
+    def clean_topic(cls, value: str) -> str:
+        topic = normalise_topic(value)
+        if not topic:
+            raise ValueError(f"topic {value!r} is empty after clean-up")
+        return topic
 
     @model_validator(mode="after")
     def check_type_rules(self) -> Self:

@@ -20,6 +20,10 @@ def test_good_card_is_accepted():
     assert card.supersedes is None
 
 
+def test_topic_is_normalised():
+    assert Card(**GOOD | {"topic": "topic_Casing Colour"}).topic == "casing_colour"
+
+
 @pytest.mark.parametrize(
     "broken",
     [
@@ -31,6 +35,7 @@ def test_good_card_is_accepted():
         {"type": "disagreement", "positions": "x", "who": ["B", "B"]},  # same person
         {"type": "proposal", "supersedes": "c1"},  # only a decision can replace one
         {"who": ["Speaker B"]},  # who = speaker letters only
+        {"topic": "การ์ด"},  # junk topic: nothing left after clean-up
     ],
 )
 def test_broken_card_is_rejected(broken):
