@@ -1,0 +1,282 @@
+"""Query-time agent: an explicit LangGraph loop (D9).
+
+decide (LLM: search / read / answer)  ->  act (code runs the tool)  ->  decide ...
+                                      ->  finish (code turns turn_ids into verified quotes, D2)
+The team filter is code, not LLM: every tool only sees the named team's data.
+"""
+
+from functools import partial
+from typing import TypedDict
+
+from langgraph.graph import END, START, StateGraph
+from sqlalchemy import Engine, func, select
+from sqlalchemy.orm import Session
+
+from catalist.extract import live_cards
+from catalist.llm import call_with_retry
+from catalist.quotes import best_quote
+from catalist.store import CardRow, MeetingRow, TurnRow
+
+MAX_STEPS = 4  # tool calls per question; free tier = ~1 call per minute per model
+
+STEP_SCHEMA = {
+    "title": "Step",
+    "type": "object",
+    "properties": {
+        "thought": {
+            "type": "string",
+            "description": "What you know and what is missing",
+        },
+        "action": {"type": "string", "enum": ["search", "read", "answer"]},
+        "query": {
+            "type": "string",
+            "description": "search: keywords, e.g. 'lcd screen cost'",
+        },
+        "turn_id": {
+            "type": "string",
+            "description": "read: a turn id like TS3006b#112",
+        },
+        "answer": {"type": "string", "description": "answer: 1-3 plain sentences"},
+        "citations": {
+            "type": "array",
+            "description": "answer: 1-3 turns that prove it, each with words copied exactly",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "turn_id": {"type": "string"},
+                    "quote": {"type": "string"},
+                },
+                "required": ["turn_id", "quote"],
+            },
+        },
+    },
+    "required": ["thought", "action"],
+}
+
+PROMPT = """You answer questions about the meetings of team {team}, a product-design team designing a TV remote control (meetings a, b, c, d in time order).
+Speakers are letters (A-D). Roles (Project Manager, Industrial Designer, User Interface Designer, Marketing Expert) are often stated by the speakers themselves: give the role with the letter when the transcript makes it clear.
+
+TEAM MEMORY: cards extracted from the meetings, in time order. CURRENT = not replaced later; "replaced by X" = a later card changed it.
+{memory}
+
+QUESTION: {question}
+
+STEPS SO FAR:
+{steps}
+
+Choose the next action:
+- search: keyword search over this team's transcript turns (to find details or the exact words someone used).
+- read: read one turn and its neighbours in full (needed before you quote it).
+- answer: 1-3 sentences that answer every part of the question, plus 1-3 citations (turn_id + words copied exactly, at least 6 words, from that turn). Prefer turns you have read.
+{force}"""
+
+
+class State(TypedDict):
+    team: str
+    question: str
+    steps: list[str]
+    result: dict
+
+
+def memory_text(cards: list[CardRow]) -> str:
+    live = {c.card_id for c in live_cards(cards)}
+    replaced_by = {c.supersedes: c.card_id for c in cards if c.supersedes}
+    replaced_by |= {c.answers: c.card_id for c in cards if c.answers}
+    lines = []
+    for c in sorted(cards, key=lambda c: (c.topic, c.order)):
+        value = f" = {c.value:g} {c.unit}" if c.value is not None else ""
+        status = (
+            "CURRENT" if c.card_id in live else f"replaced by {replaced_by[c.card_id]}"
+        )
+        lines.append(
+            f"{c.topic} | [{c.card_id}] {c.meeting_id} {c.type} ({','.join(c.who)}){value}: "
+            f"{c.summary} {c.reason} {c.positions} | {status} | evidence {' '.join(c.evidence)}"
+        )
+    return "\n".join(lines) or "(no cards)"
+
+
+def search(session: Session, team: str, query: str, limit: int = 8) -> str:
+    # shortcut: full-text search instead of embeddings (deadline); words OR-ed so one miss doesn't zero the result
+    terms = " or ".join(query.split())
+    vector = func.to_tsvector("english", TurnRow.text)
+    tsq = func.websearch_to_tsquery("english", terms)
+    rows = session.scalars(
+        select(TurnRow)
+        .join(MeetingRow)
+        .where(MeetingRow.team == team, vector.bool_op("@@")(tsq))
+        .order_by(func.ts_rank(vector, tsq).desc())
+        .limit(limit)
+    )
+    return (
+        "\n".join(f"[{t.turn_id} {t.speaker}] {t.text[:300]}" for t in rows)
+        or "no hits"
+    )
+
+
+def read(session: Session, team: str, turn_id: str) -> str:
+    turn = session.get(TurnRow, turn_id)
+    if turn is None or not turn_id.startswith(team):
+        return f"no turn {turn_id} in team {team}"
+    rows = session.scalars(
+        select(TurnRow)
+        .where(
+            TurnRow.meeting_id == turn.meeting_id,
+            TurnRow.index.between(turn.index - 2, turn.index + 2),
+        )
+        .order_by(TurnRow.index)
+    )
+    return "\n".join(f"[{t.turn_id} {t.speaker}] {t.text}" for t in rows)
+
+
+def build(engine: Engine, llm):
+    decide_llm = llm.with_structured_output(STEP_SCHEMA, method="json_schema")
+
+    def decide(state: State) -> dict:
+        with Session(engine) as session:
+            cards = list(
+                session.scalars(select(CardRow).where(CardRow.team == state["team"]))
+            )
+        last = len(state["steps"]) >= MAX_STEPS
+        prompt = PROMPT.format(
+            team=state["team"],
+            memory=memory_text(cards),
+            question=state["question"],
+            steps="\n\n".join(state["steps"]) or "(none)",
+            force="You have used all your steps: you MUST answer now." if last else "",
+        )
+        step = call_with_retry(partial(decide_llm.invoke, prompt)) or {
+            "action": "answer"
+        }
+        if last:
+            step["action"] = "answer"
+        return {"result": step}
+
+    def act(state: State) -> dict:
+        step = state["result"]
+        with Session(engine) as session:
+            if step["action"] == "search":
+                seen = search(session, state["team"], step.get("query", ""))
+            else:
+                seen = read(session, state["team"], step.get("turn_id", ""))
+        note = f"{step['action']} {step.get('query') or step.get('turn_id')}:\n{seen}"
+        print(
+            f"  {state['question'][:40]}... -> {step['action']} {step.get('query') or step.get('turn_id')}",
+            flush=True,
+        )
+        return {"steps": state["steps"] + [note]}
+
+    def finish(state: State) -> dict:
+        step = state["result"]
+        citations = []
+        with Session(engine) as session:
+            for c in step.get("citations", [])[:3]:
+                turn = session.get(TurnRow, c.get("turn_id", ""))
+                if turn is None or not turn.turn_id.startswith(state["team"]):
+                    continue  # invented or other-team turn: dropped
+                quote = best_quote(c.get("quote", ""), turn.text)
+                if quote:
+                    citations.append({"meeting_id": turn.meeting_id, "quote": quote})
+        return {"result": {"answer": step.get("answer", ""), "citations": citations}}
+
+    graph = StateGraph(State)
+    graph.add_node("decide", decide)
+    graph.add_node("act", act)
+    graph.add_node("finish", finish)
+    graph.add_edge(START, "decide")
+    graph.add_conditional_edges(
+        "decide", lambda s: "finish" if s["result"]["action"] == "answer" else "act"
+    )
+    graph.add_edge("act", "decide")
+    graph.add_edge("finish", END)
+    return graph.compile()
+
+
+def ask(agent, team: str, question: str) -> dict:
+    return agent.invoke(
+        {"team": team, "question": question, "steps": [], "result": {}}
+    )["result"]
+
+
+BRIEF_SCHEMA = {
+    "title": "Brief",
+    "type": "object",
+    "properties": {
+        "sections": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "heading": {
+                        "type": "string",
+                        "enum": [
+                            "Decisions",
+                            "What changed",
+                            "Open actions",
+                            "Open disagreements",
+                        ],
+                    },
+                    "points": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "text": {
+                                    "type": "string",
+                                    "description": "One sentence; owners by letter",
+                                },
+                                "card_ids": {
+                                    "type": "array",
+                                    "items": {"type": "string"},
+                                },
+                            },
+                            "required": ["text", "card_ids"],
+                        },
+                    },
+                },
+                "required": ["heading", "points"],
+            },
+        }
+    },
+    "required": ["sections"],
+}
+
+BRIEF_PROMPT = """Write the brief team {team} reads before its final meeting, from its memory below (meetings before the final one only).
+Sections: Decisions (what is decided now, CURRENT cards), What changed (decisions that replaced earlier ones, numbers that moved),
+Open actions (tasks with owner letter, not yet reported back), Open disagreements (still unresolved).
+Every point must list the card_ids it comes from. Do not invent anything that is not in the memory.
+
+MEMORY:
+{memory}"""
+
+
+def brief(engine: Engine, llm, team: str, before_order: int) -> str:
+    """LLM groups and words the points; code attaches a verified quote for every point."""
+    with Session(engine) as session:
+        cards = list(
+            session.scalars(
+                select(CardRow).where(
+                    CardRow.team == team, CardRow.order < before_order
+                )
+            )
+        )
+        by_id = {c.card_id: c for c in cards}
+        out = call_with_retry(
+            partial(
+                llm.with_structured_output(BRIEF_SCHEMA, method="json_schema").invoke,
+                BRIEF_PROMPT.format(team=team, memory=memory_text(cards)),
+            )
+        )
+        lines = [f"Brief for team {team}, before its final meeting"]
+        for section in out["sections"]:
+            lines.append(f"\n{section['heading'].upper()}")
+            for point in section["points"]:
+                cites = []
+                for card_id in point["card_ids"]:
+                    card = by_id.get(card_id)
+                    turn = card and session.get(TurnRow, card.evidence[0])
+                    quote = turn and best_quote(card.summary, turn.text)
+                    if quote:
+                        cites.append(f'{turn.meeting_id}: "{quote}"')
+                if cites:  # a point without a verifiable source is dropped, not printed uncited
+                    lines.append(f"- {point['text']} [{'; '.join(cites[:2])}]")
+        return "\n".join(lines)

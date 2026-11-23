@@ -1,6 +1,7 @@
 """LLM plumbing: a Postgres cache for LangChain, and a retry that waits as long as Google asks."""
 
 import hashlib
+import os
 import re
 import time
 
@@ -9,6 +10,7 @@ from langchain_core.caches import BaseCache
 from langchain_core.load import dumps, loads
 from langchain_core.messages import AIMessage
 from langchain_core.outputs import ChatGeneration
+from langchain_openai import ChatOpenAI
 from sqlalchemy import Engine, delete
 from sqlalchemy.orm import Session
 
@@ -64,8 +66,24 @@ def call_with_retry(fn, max_attempts=5, sleep=time.sleep):
         except temporary as error:
             if attempt == max_attempts:
                 raise
+            print(
+                f"  retry {attempt}/{max_attempts - 1}: {type(error).__name__}: {str(error)[:120]}",
+                flush=True,
+            )
             if not isinstance(error, openai.RateLimitError):
                 sleep(10)
                 continue
             delay = RETRY_IN.search(str(error))
             sleep(float(delay.group(1)) + 1 if delay else 60)
+
+
+def chat(engine: Engine, model: str | None = None) -> ChatOpenAI:
+    """The one LLM client (D19): Google's OpenAI-compatible endpoint, settings from .env."""
+    return ChatOpenAI(
+        base_url=os.environ["LLM_BASE_URL"],
+        api_key=os.environ["LLM_API_KEY"],
+        model=model or os.environ["LLM_MODEL"],
+        max_retries=0,  # call_with_retry handles retries (Google's 429 needs a long wait)
+        timeout=120,  # SDK default 600 s let a call hang 10+ min
+        cache=PostgresCache(engine),  # no temperature: it raised 503s on the free tier
+    )

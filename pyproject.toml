@@ -9,6 +9,7 @@ authors = [
 requires-python = ">=3.13"
 dependencies = [
     "langchain-openai>=1.8.5",
+    "langgraph>=1.0",
     "psycopg[binary]>=3.3.9",
     "pydantic>=2.14.4",
     "sqlalchemy>=2.1.9",
