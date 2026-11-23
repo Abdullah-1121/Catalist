@@ -66,42 +66,47 @@ def run_query(args, engine, llm) -> None:
         print(json.dumps(ask(build(engine, llm), args.team, args.question), indent=2))
         return
     data = json.loads(QUESTIONS.read_text())
-    out = (
+    if args.command == "brief":
+        team = data["brief_task"]["team"]
+        final = max(int(p.stem[-1], 36) - 9 for p in TRANSCRIPTS.glob(f"{team}?.txt"))
+        text = brief(engine, llm, team, before_order=final)  # final meeting excluded
+        save_answers(lambda d: d.update(brief=text))
+        print(text)
+        return
+    agent = build(engine, llm)
+    for q in data["questions"]:
+        if args.ids and q["question_id"] not in args.ids:
+            continue
+        try:
+            result = ask(agent, q["team"], q["question"])
+        except Exception as error:  # noqa: BLE001 -- one bad reply must not stop the other questions
+            result = {
+                "answer": "",
+                "citations": [],
+                "error": f"{type(error).__name__}: {error}"[:300],
+            }
+        entry = {"question_id": q["question_id"], **result}
+
+        def put(d, entry=entry):
+            rest = [a for a in d["answers"] if a["question_id"] != entry["question_id"]]
+            d["answers"] = sorted(rest + [entry], key=lambda a: a["question_id"])
+
+        save_answers(put)  # after every question: a crash keeps the rest
+        print(
+            f"{q['question_id']}: {result['answer']} ({len(result['citations'])} citations)",
+            flush=True,
+        )
+
+
+def save_answers(update) -> None:
+    """Re-read right before writing, so parallel runs don't overwrite each other's answers."""
+    current = (
         json.loads(ANSWERS.read_text())
         if ANSWERS.exists()
         else {"answers": [], "brief": ""}
     )
-    if args.command == "brief":
-        team = data["brief_task"]["team"]
-        final = max(int(p.stem[-1], 36) - 9 for p in TRANSCRIPTS.glob(f"{team}?.txt"))
-        out["brief"] = brief(
-            engine, llm, team, before_order=final
-        )  # final meeting excluded
-        print(out["brief"])
-    else:
-        agent = build(engine, llm)
-        done = {a["question_id"]: a for a in out["answers"]}
-        for q in data["questions"]:
-            if args.ids and q["question_id"] not in args.ids:
-                continue
-            try:
-                result = ask(agent, q["team"], q["question"])
-            except Exception as error:  # noqa: BLE001 -- one bad reply must not stop the other questions
-                result = {
-                    "answer": "",
-                    "citations": [],
-                    "error": f"{type(error).__name__}: {error}"[:300],
-                }
-            done[q["question_id"]] = {"question_id": q["question_id"], **result}
-            out["answers"] = sorted(done.values(), key=lambda a: a["question_id"])
-            ANSWERS.write_text(
-                json.dumps(out, indent=2)
-            )  # after every question: a crash keeps the rest
-            print(
-                f"{q['question_id']}: {result['answer']} ({len(result['citations'])} citations)",
-                flush=True,
-            )
-    ANSWERS.write_text(json.dumps(out, indent=2))
+    update(current)
+    ANSWERS.write_text(json.dumps(current, indent=2))
 
 
 def run_eval(args, engine, llm) -> None:
