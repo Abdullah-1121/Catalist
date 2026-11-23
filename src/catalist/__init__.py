@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+from functools import partial
 from pathlib import Path
 
 from sqlalchemy import create_engine
@@ -86,16 +87,21 @@ def run_query(args, engine, llm) -> None:
                 "error": f"{type(error).__name__}: {error}"[:300],
             }
         entry = {"question_id": q["question_id"], **result}
-
-        def put(d, entry=entry):
-            rest = [a for a in d["answers"] if a["question_id"] != entry["question_id"]]
-            d["answers"] = sorted(rest + [entry], key=lambda a: a["question_id"])
-
-        save_answers(put)  # after every question: a crash keeps the rest
+        save_answers(
+            partial(put_answer, entry=entry)
+        )  # after every question: a crash keeps the rest
         print(
             f"{q['question_id']}: {result['answer']} ({len(result['citations'])} citations)",
             flush=True,
         )
+
+
+def put_answer(data: dict, entry: dict) -> None:
+    old = [a for a in data["answers"] if a["question_id"] == entry["question_id"]]
+    if "error" in entry and old and old[0].get("answer"):
+        return  # a failed re-run (429 storm) must not wipe a good answer
+    rest = [a for a in data["answers"] if a["question_id"] != entry["question_id"]]
+    data["answers"] = sorted(rest + [entry], key=lambda a: a["question_id"])
 
 
 def save_answers(update) -> None:
