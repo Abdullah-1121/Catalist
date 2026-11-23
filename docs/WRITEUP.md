@@ -65,7 +65,7 @@ Hand-checked official answers (evidence turns in `eval/official_checks.md`): Q01
 
 ## Cost and time to ingest 1,000 meetings
 
-Measured (free tier, Gemma 4 26B/31B, 2026-11-23): median **111 s per meeting**, mean 185 s, worst 843 s, almost all of it waiting on rate limits (16k input tokens/min per model) and 503/429 retries; ~1.5 windows per meeting; 9% of cards rejected by the checks.
+Measured (free tier, Gemma 4 26B and 31B, 2026-11-23, 95 meetings of 24 teams, 98 meeting runs): median **163 s per meeting**, mean 260 s, worst 1,956 s (a 503 storm), almost all of it waiting on rate limits (16k input tokens/min per model) and 503/429 retries; ~1.5 windows per meeting. Result: **1,934 cards** (926 proposals, 554 decisions, 224 numbers, 159 actions, 71 disagreements) and 33 rejects (~2% after the number-card fix; 9% before).
 
 Tokens per meeting (from the transcripts, measured 3.13 chars/token): ~9.5k of turns, plus ~3k of instructions + registry per window (×1.5), plus re-asks on lazy windows (~1 in 3 windows) → **~18k input + ~2.5k output tokens per meeting**.
 
