@@ -37,6 +37,11 @@ STEP_SCHEMA = {
             "description": "read: a turn id like TS3006b#112",
         },
         "answer": {"type": "string", "description": "answer: 1-3 plain sentences"},
+        "card_ids": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "answer: ids of the TEAM MEMORY cards the answer relies on",
+        },
         "citations": {
             "type": "array",
             "description": "answer: 1-3 turns that prove it, each with words copied exactly",
@@ -67,7 +72,7 @@ STEPS SO FAR:
 Choose the next action:
 - search: keyword search over this team's transcript turns (to find details or the exact words someone used).
 - read: read one turn and its neighbours in full (needed before you quote it).
-- answer: 1-3 sentences that answer every part of the question, plus 1-3 citations (turn_id + words copied exactly, at least 6 words, from that turn). Prefer turns you have read.
+- answer: 1-3 sentences that answer every part of the question; card_ids of the memory cards you used; and 1-3 citations (turn_id + at least 6 words copied exactly from that turn). Prefer turns you have read, from at least two different meetings when the answer spans meetings.
 {force}"""
 
 
@@ -176,6 +181,19 @@ def build(engine: Engine, llm):
                 quote = best_quote(c.get("quote", ""), turn.text)
                 if quote:
                     citations.append({"meeting_id": turn.meeting_id, "quote": quote})
+            if (
+                not citations
+            ):  # fallback: evidence turns of the cards the answer used (D2)
+                for card_id in step.get("card_ids", [])[:3]:
+                    card = session.get(CardRow, card_id)
+                    if card is None or card.team != state["team"]:
+                        continue
+                    turn = session.get(TurnRow, card.evidence[0])
+                    quote = best_quote(card.summary, turn.text)
+                    if quote:
+                        citations.append(
+                            {"meeting_id": turn.meeting_id, "quote": quote}
+                        )
         return {"result": {"answer": step.get("answer", ""), "citations": citations}}
 
     graph = StateGraph(State)

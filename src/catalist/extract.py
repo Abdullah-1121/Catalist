@@ -43,6 +43,7 @@ Rules:
 - who: speaker letters only (A, B, C, D).
 - evidence: the 1-3 turn numbers [#n] where it is said most clearly. Only numbers shown in this window.
 - summary: one plain sentence with the concrete content (what, numbers, reasons).
+- Be thorough: a typical window holds 10-25 cards. Do not skip proposals, numbers (prices, costs, totals) or decisions, even small ones.
 - Do not repeat a card already in TEAM MEMORY unless something changed. Small talk, jokes and meeting logistics are not cards.
 
 TEAM MEMORY (earlier cards that are still current; ids in brackets):
