@@ -261,6 +261,8 @@ BRIEF_SCHEMA = {
 BRIEF_PROMPT = """Write the brief team {team} reads before its final meeting, from its memory below (meetings before the final one only).
 Sections: Decisions (what is decided now, CURRENT cards), What changed (decisions that replaced earlier ones, numbers that moved),
 Open actions (tasks with owner letter, not yet reported back), Open disagreements (still unresolved).
+If a later decision on the same topic contradicts an earlier one (even if it is not marked "replaced by"), list only the later one under Decisions and describe the change under What changed.
+An action is open only if no later card shows it was done, reported back or made moot.
 Every point must list the card_ids it comes from. Do not invent anything that is not in the memory.
 
 MEMORY:
