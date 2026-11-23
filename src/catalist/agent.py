@@ -5,6 +5,7 @@ decide (LLM: search / read / answer)  ->  act (code runs the tool)  ->  decide .
 The team filter is code, not LLM: every tool only sees the named team's data.
 """
 
+import re
 from functools import partial
 from typing import TypedDict
 
@@ -17,6 +18,10 @@ from catalist.llm import call_with_retry
 from catalist.quotes import best_quote
 from catalist.store import CardRow, MeetingRow, TurnRow
 
+TURN_ID = re.compile(
+    r"[A-Z]{2}\d{4}[a-z]#\d+"
+)  # the LLM sometimes wraps ids: "[TS3012b#112 A]"
+CARD_ID = re.compile(r"[A-Z]{2}\d{4}[a-z]-\d+")
 MAX_STEPS = 4  # tool calls per question; free tier = ~1 call per minute per model
 
 STEP_SCHEMA = {
@@ -81,6 +86,12 @@ class State(TypedDict):
     question: str
     steps: list[str]
     result: dict
+
+
+def overlap(a: str, b: str) -> float:
+    words = lambda t: {w for w in re.findall(r"[a-z0-9]+", t.lower()) if len(w) > 3}
+    x, y = words(a), words(b)
+    return len(x & y) / (len(x | y) or 1)
 
 
 def memory_text(cards: list[CardRow]) -> str:
@@ -171,30 +182,45 @@ def build(engine: Engine, llm):
         return {"steps": state["steps"] + [note]}
 
     def finish(state: State) -> dict:
-        step = state["result"]
-        citations = []
+        step, team = state["result"], state["team"]
+        answer = step.get("answer", "")
         with Session(engine) as session:
-            for c in step.get("citations", [])[:3]:
-                turn = session.get(TurnRow, c.get("turn_id", ""))
-                if turn is None or not turn.turn_id.startswith(state["team"]):
-                    continue  # invented or other-team turn: dropped
-                quote = best_quote(c.get("quote", ""), turn.text)
-                if quote:
-                    citations.append({"meeting_id": turn.meeting_id, "quote": quote})
-            if (
-                not citations
-            ):  # fallback: evidence turns of the cards the answer used (D2)
-                for card_id in step.get("card_ids", [])[:3]:
-                    card = session.get(CardRow, card_id)
-                    if card is None or card.team != state["team"]:
-                        continue
-                    turn = session.get(TurnRow, card.evidence[0])
-                    quote = best_quote(card.summary, turn.text)
-                    if quote:
+            cards = {
+                c.card_id: c
+                for c in session.scalars(select(CardRow).where(CardRow.team == team))
+            }
+            used = [
+                cards[i]
+                for raw in step.get("card_ids", [])
+                for i in CARD_ID.findall(str(raw))
+                if i in cards
+            ]
+            closest = sorted(cards.values(), key=lambda c: -overlap(answer, c.summary))
+            # Tiers, first one that yields a quote wins (D2: quotes always made by code):
+            # 1. turns the LLM cited  2. evidence of cards it used  3. cards closest to the answer
+            tiers = [
+                [
+                    (tid, c.get("quote", ""))
+                    for c in step.get("citations", [])
+                    for tid in TURN_ID.findall(str(c.get("turn_id", "")))
+                ],
+                [(c.evidence[0], c.summary) for c in used],
+                [(c.evidence[0], c.summary) for c in closest[:3]] if answer else [],
+            ]
+            citations = []
+            for tier in tiers:
+                for turn_id, claim in tier:
+                    turn = session.get(TurnRow, turn_id)
+                    if turn is None or not turn.turn_id.startswith(team):
+                        continue  # invented or other-team turn: dropped
+                    quote = best_quote(claim or answer, turn.text)
+                    if quote and len(citations) < 3:
                         citations.append(
                             {"meeting_id": turn.meeting_id, "quote": quote}
                         )
-        return {"result": {"answer": step.get("answer", ""), "citations": citations}}
+                if citations:
+                    break
+        return {"result": {"answer": answer, "citations": citations}}
 
     graph = StateGraph(State)
     graph.add_node("decide", decide)

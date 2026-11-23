@@ -25,3 +25,19 @@ def test_paraphrase_is_replaced_by_closest_real_words():
 
 def test_turn_too_short_to_quote():
     assert best_quote("yes okay", "Yes, okay.") is None
+
+
+def test_ids_are_found_inside_llm_wrapping():
+    from catalist.agent import CARD_ID, TURN_ID
+
+    assert TURN_ID.findall("[TS3012b#112 A]") == ["TS3012b#112"]
+    assert CARD_ID.findall("card TS3012c-18,") == ["TS3012c-18"]
+
+
+def test_overlap_prefers_the_matching_card():
+    from catalist.agent import overlap
+
+    answer = "They dropped the LCD screen because of battery consumption"
+    assert overlap(answer, "exclude LCD screen, high battery consumption") > overlap(
+        answer, "use rubber for the case"
+    )
