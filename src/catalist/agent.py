@@ -146,6 +146,16 @@ def read(session: Session, team: str, turn_id: str) -> str:
 
 def build(engine: Engine, llm):
     decide_llm = llm.with_structured_output(STEP_SCHEMA, method="json_schema")
+    # Last step: the schema itself forces an answer (forcing only the action left answers empty)
+    final_schema = {
+        **STEP_SCHEMA,
+        "properties": {
+            **STEP_SCHEMA["properties"],
+            "action": {"type": "string", "enum": ["answer"]},
+        },
+        "required": ["thought", "action", "answer", "card_ids", "citations"],
+    }
+    final_llm = llm.with_structured_output(final_schema, method="json_schema")
 
     def decide(state: State) -> dict:
         with Session(engine) as session:
@@ -160,9 +170,8 @@ def build(engine: Engine, llm):
             steps="\n\n".join(state["steps"]) or "(none)",
             force="You have used all your steps: you MUST answer now." if last else "",
         )
-        step = call_with_retry(partial(decide_llm.invoke, prompt)) or {
-            "action": "answer"
-        }
+        model = final_llm if last else decide_llm
+        step = call_with_retry(partial(model.invoke, prompt)) or {"action": "answer"}
         if last:
             step["action"] = "answer"
         return {"result": step}
