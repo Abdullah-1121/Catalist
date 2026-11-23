@@ -172,6 +172,8 @@ def build(engine: Engine, llm):
         )
         model = final_llm if last else decide_llm
         step = call_with_retry(partial(model.invoke, prompt)) or {"action": "answer"}
+        if step.get("action") == "answer" and not step.get("answer") and not last:
+            step = call_with_retry(partial(final_llm.invoke, prompt)) or step
         if last:
             step["action"] = "answer"
         return {"result": step}
