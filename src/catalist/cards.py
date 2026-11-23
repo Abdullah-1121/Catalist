@@ -1,3 +1,4 @@
+import re
 from typing import Annotated, Literal, Self
 
 from pydantic import BaseModel, Field, field_validator, model_validator
@@ -43,7 +44,11 @@ class Card(BaseModel):
     @model_validator(mode="after")
     def check_type_rules(self) -> Self:
         if self.type == "number" and self.value is None:
-            raise ValueError("number card needs a value")
+            # Gemma often writes the figure only in the summary ("budget is 12.50 EUR")
+            found = re.search(r"\d+(?:[.,]\d+)?", self.summary)
+            if not found:
+                raise ValueError("number card needs a value")
+            self.value = float(found.group().replace(",", "."))
         if self.type == "disagreement" and not self.positions:
             raise ValueError("disagreement card needs positions")
         if self.type == "disagreement" and len(set(self.who)) < 2:

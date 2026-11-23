@@ -20,6 +20,13 @@ def test_good_card_is_accepted():
     assert card.supersedes is None
 
 
+def test_number_value_is_read_from_summary_when_missing():
+    card = Card(
+        **GOOD | {"value": None, "summary": "The budget is 12.50 EUR per unit."}
+    )
+    assert card.value == 12.5
+
+
 def test_topic_is_normalised():
     assert Card(**GOOD | {"topic": "topic_Casing Colour"}).topic == "casing_colour"
 
@@ -28,7 +35,7 @@ def test_topic_is_normalised():
     "broken",
     [
         {"type": "idea"},  # rule 1: unknown type
-        {"value": None},  # rule 2: number without value
+        {"value": None, "summary": "no figure here"},  # rule 2: number without value
         {"evidence": []},  # rule 3: no evidence
         {"type": "disagreement", "positions": ""},  # rule 6: no positions
         {"type": "disagreement", "positions": "B: too cheap"},  # needs 2+ people
