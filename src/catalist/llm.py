@@ -84,6 +84,6 @@ def chat(engine: Engine, model: str | None = None) -> ChatOpenAI:
         api_key=os.environ["LLM_API_KEY"],
         model=model or os.environ["LLM_MODEL"],
         max_retries=0,  # call_with_retry handles retries (Google's 429 needs a long wait)
-        timeout=120,  # SDK default 600 s let a call hang 10+ min
+        timeout=240,  # long extraction replies need ~2-3 min; SDK default 600 s let a call hang 10+ min
         cache=PostgresCache(engine),  # no temperature: it raised 503s on the free tier
     )
