@@ -31,6 +31,14 @@ def main() -> None:
     ask_one.add_argument("team")
     ask_one.add_argument("question")
     ask_one.add_argument("--model")
+    eval_cmd = commands.add_parser(
+        "eval", help="score the agent on eval/questions.json"
+    )
+    eval_cmd.add_argument("--model")
+    check_cmd = commands.add_parser(
+        "check", help="verify every citation in answers.json"
+    )
+    check_cmd.add_argument("--model")
     brief_cmd = commands.add_parser(
         "brief", help="write the TS3012 brief into answers.json"
     )
